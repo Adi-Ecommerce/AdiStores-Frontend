@@ -10,44 +10,50 @@ function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <header className="flex justify-between items-center p-3 py-4 md:px-10 bg-black text-white">
+        <header className="flex justify-between items-center p-3 md:px-6 lg:px-10 bg-black text-white relative">
             {/* Logo */}
             <div className="flex items-center">
-                <img src={logo} alt="Logo" className="w-16 md:w-20" />
+                <img
+                    src={logo}
+                    alt="Logo"
+                    className="w-12 sm:w-14 md:w-16 lg:w-20"
+                />
             </div>
 
             {/* Desktop Navigation */}
-            <aside className="hidden md:flex justify-evenly items-center w-[75%]">
-                {/* Nav Links */}
-                <ul className="flex w-[40%] justify-evenly text-lg font-normal">
+            <aside className="hidden md:flex flex-1 justify-evenly items-center gap-4 lg:gap-8 xl:gap-12">
+                {/* Nav */}
+                <ul className="flex gap-4 md:gap-6 lg:gap-10 text-sm md:text-base lg:text-lg xl:text-xl font-normal">
                     <li className="hover:text-blue-400 cursor-pointer">Home</li>
                     <li className="hover:text-blue-400 cursor-pointer">Products</li>
                     <li className="hover:text-blue-400 cursor-pointer">About</li>
                     <li className="hover:text-blue-400 cursor-pointer">Contact</li>
                 </ul>
 
-                {/* Search Bar */}
-                <div className="flex items-center gap-2 w-[35%] bg-white text-black rounded-md px-2">
-                    <SearchIcon className="text-gray-600" />
+                {/* Search */}
+                <div className="flex items-center gap-2 border border-gray-600 rounded-md px-2 py-1
+                    w-[50%] md:w-[30%] lg:w-[40%] xl:w-[30%]">
+                    <SearchIcon className="text-gray-400" />
                     <input
                         type="text"
                         placeholder="Search Products..."
-                        className="p-2 w-full outline-none bg-transparent"
+                        className="bg-transparent p-1 w-full outline-none text-xs md:text-sm lg:text-base"
                     />
                 </div>
 
                 {/* Profile + Cart */}
-                <div className="flex gap-4 w-[20%] justify-evenly">
+                <div className="flex gap-4 md:gap-6 lg:gap-10">
                     <button className="flex gap-1 items-center hover:text-blue-400">
-                        <PersonIcon />
-                        <p className="text-lg font-normal">Profile</p>
+                        <PersonIcon className="!text-sm md:!text-base lg:!text-lg" />
+                        <p className="text-xs md:text-sm lg:text-base xl:text-lg font-normal">Profile</p>
                     </button>
                     <button className="flex gap-1 items-center hover:text-blue-400">
-                        <ShoppingCartIcon />
-                        <p className="text-lg font-normal">Cart</p>
+                        <ShoppingCartIcon className="!text-sm md:!text-base lg:!text-lg" />
+                        <p className="text-xs md:text-sm lg:text-base xl:text-lg font-normal">Cart</p>
                     </button>
                 </div>
             </aside>
+
 
             {/* Mobile Menu Button */}
             <button
@@ -60,17 +66,17 @@ function Header() {
             {/* Mobile Dropdown Menu */}
             {menuOpen && (
                 <div className="absolute top-16 left-0 w-full bg-black text-white flex flex-col items-center gap-6 py-6 md:hidden shadow-lg z-50">
-                    {/* Search Bar (Mobile) */}
-                    <div className="flex items-center gap-2 w-[90%] bg-white text-black rounded-md px-2">
-                        <SearchIcon className="text-gray-600" />
+                    {/* Search for Mobile */}
+                    <div className="flex items-center gap-2 border border-gray-600 rounded-md px-3 py-2 w-[90%]">
+                        <SearchIcon className="text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Search..."
-                            className="p-2 w-full outline-none bg-transparent"
+                            placeholder="Search Products..."
+                            className="bg-transparent w-full outline-none text-base"
                         />
                     </div>
 
-                    {/* Nav Links */}
+                    {/* Nav */}
                     <ul className="flex flex-col gap-4 text-lg font-normal items-center">
                         <li className="hover:text-blue-400 cursor-pointer">Home</li>
                         <li className="hover:text-blue-400 cursor-pointer">Products</li>
@@ -79,7 +85,7 @@ function Header() {
                     </ul>
 
                     {/* Profile + Cart */}
-                    <div className="flex gap-6 mt-2">
+                    <div className="flex gap-8 mt-4">
                         <button className="flex gap-1 items-center hover:text-blue-400">
                             <PersonIcon />
                             <p>Profile</p>

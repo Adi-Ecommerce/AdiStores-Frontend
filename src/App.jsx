@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from "./pages/Authentication/Login";
 import Register from "./pages/Authentication/Register";
 import AuthLayout from './components/layout/AuthLayout';
-import Header from "./components/common/Header.jsx";
+import MainLayout from './components/layout/MainLayout';
+
 
 
 function App() {
@@ -13,7 +14,9 @@ function App() {
             <Route path='/login' element={<Login />} /> 
             <Route path='/register' element={<Register/>} />
         </Route>
-        <Route path='/' element={<Header/>} />
+        <Route path='/' element={<MainLayout/>} >
+
+        </Route>
       </Routes>
     </Router>
   );

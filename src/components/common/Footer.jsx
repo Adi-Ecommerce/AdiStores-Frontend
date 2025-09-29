@@ -4,7 +4,7 @@ import getYear from '../../utils/NewDate';
 
 function Footer() {
     return (
-        <main className="flex flex-col gap-10 bg-black p-6 md:px-10 lg:px-16">
+        <main className="flex flex-col gap-10 bg-black p-6 md:px-10 lg:px-16 ">
             <footer className="flex flex-col md:flex-row justify-between items-start text-white gap-y-10 md:gap-y-0">
 
                 {/* Left Section (Logo + Description) */}

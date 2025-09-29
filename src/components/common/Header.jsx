@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import logo from "../../assets/ChatGPT_Image_Sep_27__2025__12_04_37_AM-removebg-preview (1).png";
 import PersonIcon from "@mui/icons-material/Person";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -24,9 +25,9 @@ function Header() {
             <aside className="hidden md:flex flex-1 justify-evenly items-center gap-4 lg:gap-8 xl:gap-12">
                 {/* Nav */}
                 <ul className="flex gap-4 md:gap-6 lg:gap-10 text-sm md:text-base lg:text-lg xl:text-xl font-normal">
-                    <li className="hover:text-blue-400 cursor-pointer">Home</li>
-                    <li className="hover:text-blue-400 cursor-pointer">Products</li>
-                    <li className="hover:text-blue-400 cursor-pointer">About</li>
+                    <Link to="/" className="hover:text-blue-400 cursor-pointer">Home</Link>
+                    <Link to="/products" className="hover:text-blue-400 cursor-pointer">Products</Link>
+                    <Link to='/about' className="hover:text-blue-400 cursor-pointer">About</Link>
                     <li className="hover:text-blue-400 cursor-pointer">Contact</li>
                 </ul>
 
@@ -43,14 +44,14 @@ function Header() {
 
                 {/* Profile + Cart */}
                 <div className="flex gap-4 md:gap-6 lg:gap-10">
-                    <button className="flex gap-1 items-center hover:text-blue-400">
+                    <Link to="/profile" className="flex gap-1 items-center hover:text-blue-400">
                         <PersonIcon className="!text-sm md:!text-base lg:!text-lg" />
                         <p className="text-xs md:text-sm lg:text-base xl:text-lg font-normal">Profile</p>
-                    </button>
-                    <button className="flex gap-1 items-center hover:text-blue-400">
+                    </Link>
+                    <Link to='/cart' className="flex gap-1 items-center hover:text-blue-400">
                         <ShoppingCartIcon className="!text-sm md:!text-base lg:!text-lg" />
                         <p className="text-xs md:text-sm lg:text-base xl:text-lg font-normal">Cart</p>
-                    </button>
+                    </Link>
                 </div>
             </aside>
 

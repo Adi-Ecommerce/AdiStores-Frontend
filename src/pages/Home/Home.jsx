@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import Swipe from "./Swiper";
 
 function Home() {
-  return (
-    <div className={`border h-full`}>Home</div>
-  )
+    return (
+        <>
+            <Swipe />
+        </>
+    );
 }
 
-export default Home
+export default Home;

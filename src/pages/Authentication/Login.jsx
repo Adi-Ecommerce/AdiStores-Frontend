@@ -7,8 +7,7 @@ function Login() {
     const BackendURL=import.meta.env.VITE_BACKEND_URL;
     const [formData, setFormData] = useState({
         email: "",
-        password: "",
-        confirmPassword: "",
+        password: ""
     });
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -24,27 +23,19 @@ function Login() {
         e.preventDefault();
         setLoading(true);
 
-        if (formData.password !== formData.confirmPassword) {
-            toast.error("Passwords do not match", { duration: 3000 });
-            setLoading(false);
-            return;
-        }
-
         try {
-            const response = await fetch(`${BackendURL}/api/Users/login`,
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(formData),
-                }
-            );
+            const response = await fetch(`${BackendURL}/api/Users/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData), // only email + password
+            });
 
             const data = await response.json();
 
             if (response.ok) {
                 toast.success(data.message || "Login successful!", { duration: 3000 });
                 setTimeout(() => {
-                    window.location.href = "/home"; //redirect after 1s
+                    window.location.href = "/home";
                 }, 1000);
             } else {
                 toast.error(data.message || "Login failed", { duration: 3000 });
@@ -56,6 +47,7 @@ function Login() {
             setLoading(false);
         }
     };
+
 
     return (
         <motion.div

@@ -1,17 +1,19 @@
 import React, { useState } from "react";
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // ✅ import useNavigate
 import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react"; // icons for show/hide
 
 function Login() {
-    const BackendURL=import.meta.env.VITE_BACKEND_URL;
+    const BackendURL = import.meta.env.VITE_BACKEND_URL;
     const [formData, setFormData] = useState({
         email: "",
         password: ""
     });
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+
+    const navigate = useNavigate(); // ✅ initialize
 
     // Update form data
     const handleChange = (e) => {
@@ -36,7 +38,7 @@ function Login() {
             if (response.ok) {
                 toast.success(data.message || "Login successful!", { duration: 3000 });
                 setTimeout(() => {
-                    window.location.href = "/home";
+                    navigate("/home"); // ✅ use navigate instead of window.location.href
                 }, 1000);
             } else {
                 toast.error(data.message || "Login failed", { duration: 3000 });
@@ -48,7 +50,6 @@ function Login() {
             setLoading(false);
         }
     };
-
 
     return (
         <motion.div
@@ -101,7 +102,6 @@ function Login() {
                     </button>
                 </div>
 
-
                 {/* Submit */}
                 <button
                     type="submit"
@@ -139,7 +139,7 @@ function Login() {
             <span className="flex gap-2 place-self-center mt-3">
                 <p className="text-[#565d6dff] font-inter">Don’t have an account?</p>
                 <Link
-                    to='/'
+                    to="/register" // ✅ use Link
                     className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]"
                 >
                     Sign Up

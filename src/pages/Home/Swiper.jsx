@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { motion } from "framer-motion";
+import {Typewriter} from "react-simple-typewriter";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -44,40 +45,46 @@ function Swipe() {
                             />
 
                             {/* Animated overlay */}
-                            <motion.div
-                                className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-6 text-white z-10 text-center px-4"
-                                variants={overlayVariants}
-                                initial="hidden"
-                                animate="visible"
-                                key={index} // <-- key is important so animation replays on slide change
-                            >
-                                <motion.h1
-                                    className="text-xl md:text-4xl lg:text-6xl font-bold w-[90%] md:w-[70%] lg:w-[60%] leading-tight"
-                                    variants={childVariants}
-                                >
-                                    Discover your Next Favourite Find
-                                </motion.h1>
-
-                                <motion.p
-                                    className="text-base md:text-lg lg:text-xl font-medium max-w-2xl"
-                                    variants={childVariants}
-                                >
-                                    Explore a curated collection of unique products and trending styles.
-                                </motion.p>
-
-                                <motion.div variants={childVariants}>
-                                    <Link
-                                        to="/products"
-                                        className="px-6 py-2 rounded-3xl bg-[#636AE8] hover:bg-[#4f54c7] transition-colors text-sm md:text-base lg:text-lg font-medium"
-                                    >
-                                        Shop Now
-                                    </Link>
-                                </motion.div>
-                            </motion.div>
                         </div>
                     </SwiperSlide>
                 ))}
             </Swiper>
+            <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-black/100 via-black/50 to-transparent flex flex-col items-start justify-center gap-10 text-white z-10 px-20"
+                variants={overlayVariants}
+                initial="hidden"
+                animate="visible"
+                 // <-- key is important so animation replays on slide change
+            >
+                <motion.h1
+                    className="text-xl md:text-4xl lg:text-7xl font-normal w-[90%] md:w-[70%] lg:w-[60%] leading-tight"
+                    variants={childVariants}
+                >
+                    New Season Collection
+                </motion.h1>
+
+                <motion.p
+                    className="text-base md:text-lg lg:text-3xl font-normal max-w-2xl"
+                    variants={childVariants}
+                >
+                    <Typewriter words={['Explore the latest trends in fashion and accessories, crafted for style\n' +
+                    '                    and comfort. Discover your next favorite piece.','Explore a curated collection of unique products and trending styles.', 'Explore our new collection featuring fresh styles and timeless pieces. Shop now and elevate your wardrobe.','Elevate your style with our exclusive seasonal range. Discover fashion-forward pieces and timeless essentials for every occasion.']}
+                    loop={0}
+                    typeSpeed={30}
+                    deleteSpeed={5}/>
+
+
+                </motion.p>
+
+                <motion.div variants={childVariants}>
+                    <Link
+                        to="/products"
+                        className="px-6 py-3 rounded-lg bg-[#636AE8] hover:bg-[#4f54c7] transition-colors text-sm md:text-base lg:text-lg font-medium"
+                    >
+                        Discover More!
+                    </Link>
+                </motion.div>
+            </motion.div>
         </div>
     );
 }

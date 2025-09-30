@@ -12,7 +12,6 @@ function Login() {
     });
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     // Update form data
     const handleChange = (e) => {
@@ -32,8 +31,7 @@ function Login() {
         }
 
         try {
-            const response = await fetch(
-                `${BackendURL}/api/Users/login`,
+            const response = await fetch(`${BackendURL}/api/Users/login`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -46,7 +44,7 @@ function Login() {
             if (response.ok) {
                 toast.success(data.message || "Login successful!", { duration: 3000 });
                 setTimeout(() => {
-                    window.location.href = "/"; // redirect after 1s
+                    window.location.href = "/"; //redirect after 1s
                 }, 1000);
             } else {
                 toast.error(data.message || "Login failed", { duration: 3000 });
@@ -110,26 +108,6 @@ function Login() {
                     </button>
                 </div>
 
-                {/* Confirm Password */}
-                <div className="flex flex-col gap-2 col-span-full relative">
-                    <label className="text-xl font-normal font-inter">Confirm Password</label>
-                    <input
-                        type={showConfirmPassword ? "text" : "password"}
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        placeholder="*******"
-                        className="p-2 pr-10 rounded-lg border-2 border-[#dee1e6ff] focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
-                        required
-                    />
-                    <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-12 text-gray-500 hover:text-gray-700 flex "
-                    >
-                        {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
-                </div>
 
                 {/* Submit */}
                 <button

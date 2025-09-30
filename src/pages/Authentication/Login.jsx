@@ -44,7 +44,7 @@ function Login() {
             if (response.ok) {
                 toast.success(data.message || "Login successful!", { duration: 3000 });
                 setTimeout(() => {
-                    window.location.href = "/"; //redirect after 1s
+                    window.location.href = "/home"; //redirect after 1s
                 }, 1000);
             } else {
                 toast.error(data.message || "Login failed", { duration: 3000 });
@@ -146,7 +146,7 @@ function Login() {
             <span className="flex gap-2 place-self-center mt-3">
                 <p className="text-[#565d6dff] font-inter">Don’t have an account?</p>
                 <a
-                    href="/register"
+                    href="/"
                     className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]"
                 >
                     Sign Up

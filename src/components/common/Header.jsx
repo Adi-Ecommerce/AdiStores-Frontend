@@ -25,7 +25,7 @@ function Header() {
             <aside className="hidden md:flex flex-1 justify-evenly items-center gap-4 lg:gap-8 xl:gap-12">
                 {/* Nav */}
                 <ul className="flex gap-4 md:gap-6 lg:gap-10 text-sm md:text-base lg:text-lg xl:text-xl font-normal">
-                    <Link to="/" className="hover:text-blue-400 cursor-pointer">Home</Link>
+                    <Link to="/home" className="hover:text-blue-400 cursor-pointer">Home</Link>
                     <Link to="/products" className="hover:text-blue-400 cursor-pointer">Products</Link>
                     <Link to='/about' className="hover:text-blue-400 cursor-pointer">About</Link>
                     <li className="hover:text-blue-400 cursor-pointer">Contact</li>

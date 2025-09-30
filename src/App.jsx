@@ -17,10 +17,10 @@ function App() {
       <Routes>
         <Route element={<AuthLayout/>}>
             <Route path='/login' element={<Login />} /> 
-            <Route path='/register' element={<Register/>} />
+            <Route path='/' element={<Register/>} />
         </Route>
         <Route element={<MainLayout/>} >
-            <Route path='/' element={<Home/>} />
+            <Route path='/home' element={<Home/>} />
             <Route path='/products' element={<Products/>} />
             <Route path='/products/:id' element={<ProductList/>} />
             <Route path="/profile" element={<Profile/>} />

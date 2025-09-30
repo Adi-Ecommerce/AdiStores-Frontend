@@ -1,220 +1,200 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react"; // 👈 Import Lucide icons
 
 function Register() {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    age: "",
-    address: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+    const BackendURL=import.meta.env.VITE_BACKEND_URL;
+    const [formData, setFormData] = useState({
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        age: "",
+        address: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
 
-  const [message, setMessage] = useState(""); // feedback message
-  const [isError, setIsError] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const navigate = useNavigate();
 
-  // Handle input change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+    // Handle input change
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
 
-  // Submit form
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage("");
-    setIsError(false);
+    // Submit form
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    // Simple frontend validation
-    if (formData.password !== formData.confirmPassword) {
-      setMessage("Passwords do not match");
-      setIsError(true);
-      return;
-    }
+        if (!formData.firstName || !formData.lastName || !formData.email) {
+            toast.error("Please fill in all required fields", { duration: 3000 });
+            return;
+        }
 
-    try {
-      const response = await fetch("https://localhost:5001/api/users/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          middleName: formData.middleName,
-          lastName: formData.lastName,
-          age: parseInt(formData.age),
-          address: formData.address,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
+        if (formData.age < 18) {
+            toast.error("You must be at least 18 years old", { duration: 3000 });
+            return;
+        }
 
-      const data = await response.json();
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match", { duration: 3000 });
+            return;
+        }
 
-      if (response.ok) {
-        setMessage(data.message || "Registration successful!");
-        setIsError(false);
+        setLoading(true);
 
-        // Redirect to Login after 1.5 seconds
-        setTimeout(() => {
-          window.location.href = "/login";
-        }, 1500);
-      } else {
-        setMessage(data.message || "Registration failed");
-        setIsError(true);
-      }
-    } catch (err) {
-      console.error(err);
-      setMessage("Server error. Please try again later.");
-      setIsError(true);
-    }
-  };
+        try {
+            const response = await fetch(`${BackendURL}/api/Users/register`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        firstName: formData.firstName,
+                        middleName: formData.middleName,
+                        lastName: formData.lastName,
+                        age: parseInt(formData.age),
+                        address: formData.address,
+                        email: formData.email,
+                        password: formData.password,
+                    }),
+                }
+            );
 
-  return (
-    <div className="flex flex-col gap-5 max-w-3xl mx-auto mt-10">
-      <div className="flex flex-col gap items-center relative">
-        <h1 className="text-3xl font-medium font-archivo">Create an Account</h1>
-        <p className="text-md font-normal text-gray-500 font-inter">
-          Join us and start your journey
-        </p>
-      </div>
+            const data = await response.json();
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-5">
-        <div className="flex flex-col gap-2">
-          <label className="text-xl font-normal font-inter">First Name</label>
-          <input
-            type="text"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            placeholder="John"
-            className="p-2 rounded-lg border-2 border-[#dee1e6ff]"
-            required
-          />
+            if (response.ok) {
+                toast.success(data.message || "Registration successful!", { duration: 3000 });
+                setTimeout(() => navigate("/login"), 1500);
+            } else {
+                const errorMsg = data.message || data.errors?.[0] || "Registration failed";
+                toast.error(errorMsg, { duration: 3000 });
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("Server error. Please try again later.", { duration: 3000 });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="flex flex-col gap-5 max-w-3xl mx-auto mt-10">
+            <Toaster position="top-right" />
+
+            {/* Header */}
+            <div className="flex flex-col items-center relative">
+                <h1 className="text-3xl font-medium font-archivo">Create an Account</h1>
+                <p className="text-md font-normal text-gray-500 font-inter">
+                    Join us and start your journey
+                </p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-5">
+                {/* Normal fields */}
+                {[
+                    { label: "First Name", name: "firstName", type: "text", placeholder: "John", required: true },
+                    { label: "Last Name", name: "lastName", type: "text", placeholder: "Doe", required: true },
+                    { label: "Middle Name", name: "middleName", type: "text", placeholder: "K", required: false },
+                    { label: "Email", name: "email", type: "email", placeholder: "you@example.com", required: true },
+                    { label: "Age", name: "age", type: "number", placeholder: "25", required: true },
+                    { label: "Address", name: "address", type: "text", placeholder: "123 Main St", required: true },
+                ].map((field, idx) => (
+                    <div key={idx} className="flex flex-col gap-2">
+                        <label className="text-xl font-normal font-inter">{field.label}</label>
+                        <input
+                            type={field.type}
+                            name={field.name}
+                            value={formData[field.name]}
+                            onChange={handleChange}
+                            placeholder={field.placeholder}
+                            autoComplete="on"
+                            className="p-2 rounded-lg border-2 border-[#dee1e6ff] focus:border-blue-500 outline-none transition"
+                            required={field.required}
+                        />
+                    </div>
+                ))}
+
+                {/* Password field */}
+                <div className="flex flex-col gap-2 relative">
+                    <label className="text-xl font-normal font-inter">Password</label>
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="*******"
+                        autoComplete="on"
+                        className="p-2 pr-10 rounded-lg border-2 border-[#dee1e6ff] focus:border-blue-500 outline-none transition"
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute right-3 top-12 text-gray-500 hover:text-black"
+                    >
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                </div>
+
+                {/* Confirm Password field */}
+                <div className="flex flex-col gap-2 relative">
+                    <label className="text-xl font-normal font-inter">Confirm Password</label>
+                    <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        placeholder="*******"
+                        autoComplete="on"
+                        className="p-2 pr-10 rounded-lg border-2 border-[#dee1e6ff] focus:border-blue-500 outline-none transition"
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                        className="absolute right-3 top-12 text-gray-500 hover:text-black"
+                    >
+                        {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                </div>
+
+                {/* Submit button */}
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className={`col-span-full w-[70%] place-self-center p-3 rounded-md border border-[#dee1e6ff] text-black font-inter 
+            hover:bg-blue-500 hover:text-white focus:ring-2 focus:ring-blue-300 active:scale-95 transition-all
+            ${loading ? "opacity-70 cursor-not-allowed bg-gray-300" : ""}`}
+                >
+                    {loading ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                          Signing Up...
+                        </span>
+                    ) : (
+                        "Sign Up"
+                    )}
+                </button>
+            </form>
+
+            {/* Login Link */}
+            <span className="flex gap-1 place-self-center mt-3">
+                <p className="text-[#565d6dff] font-inter">Already have an account?</p>
+                <a href="/login" className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]">
+                    Login
+                </a>
+            </span>
         </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-xl font-normal font-inter">Last Name</label>
-          <input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            placeholder="Doe"
-            className="p-2 rounded-lg border-2 border-[#dee1e6ff]"
-            required
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-xl font-normal font-inter">Middle Name</label>
-          <input
-            type="text"
-            name="middleName"
-            value={formData.middleName}
-            onChange={handleChange}
-            placeholder="K"
-            className="p-2 rounded-lg border-2 border-[#dee1e6ff]"
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-xl font-normal font-inter">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="you@example.com"
-            className="p-2 rounded-lg border-2 border-[#dee1e6ff]"
-            required
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-xl font-normal font-inter">Age</label>
-          <input
-            type="number"
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-            placeholder="25"
-            className="p-2 rounded-lg border-2 border-[#dee1e6ff]"
-            required
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-xl font-normal font-inter">Address</label>
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            placeholder="123 Main St"
-            className="p-2 rounded-lg border-2 border-[#dee1e6ff]"
-            required
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-xl font-normal font-inter">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="*******"
-            className="p-2 rounded-lg border-2 border-[#dee1e6ff]"
-            required
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className="text-xl font-normal font-inter">Confirm Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="*******"
-            className="p-2 rounded-lg border-2 border-[#dee1e6ff]"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="grid col-span-full border w-[70%] place-self-center p-3 rounded-md mt-2 items-center font-inter border border-[#dee1e6ff] text-black hover:text-[#171A1FFF]"
-        >
-          Sign Up
-        </button>
-      </form>
-
-      {message && (
-        <p
-          className={`text-center mt-2 font-inter ${
-            isError ? "text-red-500" : "text-green-500"
-          }`}
-        >
-          {message}
-        </p>
-      )}
-
-      <span className="flex gap place-self-center mt-3">
-        <p className="text-[#565d6dff] font-inter">Already have an account?</p>
-        <a
-          href="/login"
-          className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]"
-        >
-          Login
-        </a>
-      </span>
-    </div>
-  );
+    );
 }
 
 export default Register;

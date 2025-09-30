@@ -1,14 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
 import SwipeData from "./SwipeData.js";
+import Headings from "../../components/common/Heading";
 
 function TopCats() {
     return (
         <div className="flex flex-col gap-10 items-center py-10 bg-gray-200">
-            <h1 className="text-center font-semibold text-2xl sm:text-3xl lg:text-4xl">
-                Explore Top Categories
-            </h1>
-
+            <Headings title={`Explore Top Categories`} />
             <main className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-6 w-[90%] mx-auto">
                 {SwipeData.filter(item => item.summary).map((icon, index) => (
                     <motion.div

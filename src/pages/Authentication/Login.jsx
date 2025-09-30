@@ -1,121 +1,181 @@
 import React, { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { motion } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react"; // icons for show/hide
 
 function Login() {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [message, setMessage] = useState(""); // Feedback message
-  const [isError, setIsError] = useState(false); // Is it an error message?
+    const BackendURL=import.meta.env.VITE_BACKEND_URL;
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Update form data
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    // Update form data
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
 
-  // Submit form
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage(""); // clear previous messages
-    setIsError(false);
+    // Submit form
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
 
-    try {
-      const response = await fetch("https://localhost:5001/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match", { duration: 3000 });
+            setLoading(false);
+            return;
+        }
 
-      const data = await response.json();
+        try {
+            const response = await fetch(
+                `${BackendURL}/api/Users/login`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData),
+                }
+            );
 
-      if (response.ok) {
-        // Success
-        setMessage(data.message); // "Login successful"
-        setIsError(false);
+            const data = await response.json();
 
-        // Redirect after 1 second
-        setTimeout(() => {
-          window.location.href = "/dashboard"; // or homepage
-        }, 1000);
-      } else {
-        // Backend returned 401 Unauthorized
-        setMessage(data.message || "Login failed");
-        setIsError(true);
-      }
-    } catch (err) {
-      console.error(err);
-      setMessage("Server error. Please try again later.");
-      setIsError(true);
-    }
-  };
+            if (response.ok) {
+                toast.success(data.message || "Login successful!", { duration: 3000 });
+                setTimeout(() => {
+                    window.location.href = "/"; // redirect after 1s
+                }, 1000);
+            } else {
+                toast.error(data.message || "Login failed", { duration: 3000 });
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error("Server error. Please try again later.", { duration: 3000 });
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <div className="flex flex-col gap-5 max-w-md mx-auto mt-10">
-      <div className="flex flex-col gap items-center relative">
-        <h1 className="text-3xl font-medium font-archivo">Login</h1>
-        <p className="text-md font-normal text-gray-500 font-inter">
-          Welcome back!
-        </p>
-      </div>
-
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-5">
-        <div className="flex flex-col gap-2 col-span-full">
-          <label className="text-xl font-normal font-inter">Email address</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="you@example.com"
-            className="p-2 rounded-lg border-2 border-[#dee1e6ff]"
-            required
-          />
-        </div>
-
-        <div className="flex flex-col gap-2 col-span-full">
-          <label className="text-xl font-normal font-inter">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="*******"
-            className="p-2 rounded-lg border-2 border-[#dee1e6ff]"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="grid col-span-full border w-[70%] place-self-center p-3 rounded-md mt-2 items-center font-inter border border-[#dee1e6ff] text-black hover:text-[#171A1FFF]"
+    return (
+        <motion.div
+            className="flex flex-col gap-5 max-w-md mx-auto mt-10 relative"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
         >
-          Login
-        </button>
-      </form>
+            {/* Toast Container */}
+            <Toaster position="top-right" />
 
-      {/* Feedback message */}
-      {message && (
-        <p
-          className={`text-center ${
-            isError ? "text-red-500" : "text-green-500"
-          } font-inter mt-2`}
-        >
-          {message}
-        </p>
-      )}
+            <div className="flex flex-col gap items-center relative">
+                <h1 className="text-3xl font-medium font-archivo">Login</h1>
+                <p className="text-md font-normal text-gray-500 font-inter">Welcome back!</p>
+            </div>
 
-      <span className="flex gap place-self-center mt-3">
-        <p className="text-[#565d6dff] font-inter">Don’t have an account?</p>
-        <a
-          href="/register"
-          className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]"
-        >
-          Sign Up
-        </a>
-      </span>
-    </div>
-  );
+            <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-5">
+                {/* Email */}
+                <div className="flex flex-col gap-2 col-span-full">
+                    <label className="text-xl font-normal font-inter">Email address</label>
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="you@example.com"
+                        className="p-2 rounded-lg border-2 border-[#dee1e6ff] focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+                        required
+                    />
+                </div>
+
+                {/* Password */}
+                <div className="flex flex-col gap-2 col-span-full relative">
+                    <label className="text-xl font-normal font-inter">Password</label>
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="*******"
+                        className="p-2 pr-10 rounded-lg border-2 border-[#dee1e6ff] focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-12 text-gray-500 hover:text-gray-700"
+                    >
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                </div>
+
+                {/* Confirm Password */}
+                <div className="flex flex-col gap-2 col-span-full relative">
+                    <label className="text-xl font-normal font-inter">Confirm Password</label>
+                    <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        placeholder="*******"
+                        className="p-2 pr-10 rounded-lg border-2 border-[#dee1e6ff] focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute right-3 top-12 text-gray-500 hover:text-gray-700 flex "
+                    >
+                        {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                </div>
+
+                {/* Submit */}
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className={`col-span-full w-[70%] place-self-center p-3 rounded-md mt-2 font-inter border-2 border-[#dee1e6ff] text-black
+                      hover:bg-blue-500 hover:text-white active:bg-blue-600 focus:ring-2 focus:ring-blue-400 transition flex justify-center items-center gap-2`}
+                >
+                    {loading ? (
+                        <svg
+                            className="animate-spin h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                            ></circle>
+                            <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v8H4z"
+                            ></path>
+                        </svg>
+                    ) : null}
+                    {loading ? "Logging in..." : "Login"}
+                </button>
+            </form>
+
+            {/* Register link */}
+            <span className="flex gap-2 place-self-center mt-3">
+                <p className="text-[#565d6dff] font-inter">Don’t have an account?</p>
+                <a
+                    href="/register"
+                    className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]"
+                >
+                    Sign Up
+                </a>
+            </span>
+        </motion.div>
+    );
 }
 
 export default Login;

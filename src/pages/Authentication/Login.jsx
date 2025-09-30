@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {Link} from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react"; // icons for show/hide
@@ -137,12 +138,12 @@ function Login() {
             {/* Register link */}
             <span className="flex gap-2 place-self-center mt-3">
                 <p className="text-[#565d6dff] font-inter">Don’t have an account?</p>
-                <a
-                    href="/"
+                <Link
+                    to='/'
                     className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]"
                 >
                     Sign Up
-                </a>
+                </Link>
             </span>
         </motion.div>
     );

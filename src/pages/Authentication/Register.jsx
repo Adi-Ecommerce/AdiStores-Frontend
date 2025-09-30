@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
+
 import toast, { Toaster } from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react"; // 👈 Import Lucide icons
 
@@ -189,9 +190,9 @@ function Register() {
             {/* Login Link */}
             <span className="flex gap-1 place-self-center mt-3">
                 <p className="text-[#565d6dff] font-inter">Already have an account?</p>
-                <a href="/login" className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]">
+                <Link to="/login" className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]">
                     Login
-                </a>
+                </Link>
             </span>
         </div>
     );

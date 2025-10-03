@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { useNavigate,Link } from "react-router-dom";
-
+import {AuthContext} from "../../context/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react"; // 👈 Import Lucide icons
 
 function Register() {
     const BackendURL=import.meta.env.VITE_BACKEND_URL;
+    const {login,logout}=useContext(AuthContext);
     const [formData, setFormData] = useState({
         firstName: "",
         middleName: "",
@@ -72,8 +73,9 @@ function Register() {
             const data = await response.json();
 
             if (response.ok) {
+                login(data.user,data.token);
                 toast.success(data.message || "Registration successful!", { duration: 3000 });
-                setTimeout(() => navigate("/login"), 1500);
+                setTimeout(() => navigate("/home"), 1000);
             } else {
                 const errorMsg = data.message || data.errors?.[0] || "Registration failed";
                 toast.error(errorMsg, { duration: 3000 });

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { Link, useNavigate } from "react-router-dom"; // ✅ import useNavigate
 import toast, { Toaster } from "react-hot-toast";
+import {AuthContext} from "../../context/AuthContext";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react"; // icons for show/hide
 
 function Login() {
     const BackendURL = import.meta.env.VITE_BACKEND_URL;
+    const {login,logout}=useContext(AuthContext);
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -36,10 +38,10 @@ function Login() {
             const data = await response.json();
 
             if (response.ok) {
+                login(data.user,data.token);
                 toast.success(data.message || "Login successful!", { duration: 3000 });
-                setTimeout(() => {
-                    navigate("/home"); // ✅ use navigate instead of window.location.href
-                }, 1000);
+                setTimeout(() =>
+                    navigate("/home") , 1000);
             } else {
                 toast.error(data.message || "Login failed", { duration: 3000 });
             }

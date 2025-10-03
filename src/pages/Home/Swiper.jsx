@@ -32,7 +32,6 @@ function Swipe() {
                 loop={true}
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
                 pagination={{ clickable: true }}
-                navigation
                 className="h-full w-full"
             >
                 {SwipeData.map((item, index) => (
@@ -41,7 +40,7 @@ function Swipe() {
                             <img
                                 src={item.img}
                                 alt={item.alt}
-                                className="w-full h-full object-fit object-center"
+                                className="w-full h-full object-cover lg:object-fit object-center"
                             />
 
                             {/* Animated overlay */}
@@ -50,7 +49,7 @@ function Swipe() {
                 ))}
             </Swiper>
             <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-black/100 via-black/50 to-transparent flex flex-col items-start justify-center gap-10 text-white z-10 px-20"
+                className="absolute inset-0 bg-gradient-to-r from-black/50 lg:from-black/100 via-black/50 to-transparent flex flex-col items-start justify-center gap-10 text-white z-10 px-5 lg:px-20"
                 variants={overlayVariants}
                 initial="hidden"
                 animate="visible"

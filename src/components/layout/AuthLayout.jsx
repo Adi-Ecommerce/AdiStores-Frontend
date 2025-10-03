@@ -5,7 +5,7 @@ function AuthLayout() {
   return (
      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 gap-3 py-10">
         <img src={logo} alt="" className='h-15 w-fit'/>
-      <div className="w-full max-w-[60%] lg:max-w-[50%] bg-white p-8 rounded-xl shadow-md border-2 border-[#dee1e6ff]">
+      <div className="w-full max-w-[90%] lg:max-w-[50%] bg-white p-8 rounded-xl shadow-md border-2 border-[#dee1e6ff]">
         <Outlet />
       </div>
     </div>

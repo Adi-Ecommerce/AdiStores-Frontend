@@ -9,7 +9,9 @@ import SearchIcon from "@mui/icons-material/Search";
 
 function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
-
+    const closeMenu = () => {
+        setMenuOpen(false);
+    }
     return (
         <header className="flex justify-between items-center p-3 md:px-6 lg:px-10 bg-black text-white relative">
             {/* Logo */}
@@ -79,22 +81,22 @@ function Header() {
 
                     {/* Nav */}
                     <ul className="flex flex-col gap-4 text-lg font-normal items-center">
-                        <li className="hover:text-blue-400 cursor-pointer">Home</li>
-                        <li className="hover:text-blue-400 cursor-pointer">Products</li>
-                        <li className="hover:text-blue-400 cursor-pointer">About</li>
-                        <li className="hover:text-blue-400 cursor-pointer">Contact</li>
+                        <Link to='/home' onClick={closeMenu} className="hover:text-blue-400 cursor-pointer">Home</Link>
+                        <Link to='/products' onClick={closeMenu} className="hover:text-blue-400 cursor-pointer">Products</Link>
+                        <Link to='/about' onClick={closeMenu} className="hover:text-blue-400 cursor-pointer">About</Link>
+                        <Link to='/about' onClick={closeMenu} className="hover:text-blue-400 cursor-pointer">Contact</Link>
                     </ul>
 
                     {/* Profile + Cart */}
                     <div className="flex gap-8 mt-4">
-                        <button className="flex gap-1 items-center hover:text-blue-400">
+                        <Link to='/profile' onClick={closeMenu} className="flex gap-1 items-center hover:text-blue-400">
                             <PersonIcon />
                             <p>Profile</p>
-                        </button>
-                        <button className="flex gap-1 items-center hover:text-blue-400">
+                        </Link>
+                        <Link to='/cart' onClick={closeMenu} className="flex gap-1 items-center hover:text-blue-400">
                             <ShoppingCartIcon />
                             <p>Cart</p>
-                        </button>
+                        </Link>
                     </div>
                 </div>
             )}

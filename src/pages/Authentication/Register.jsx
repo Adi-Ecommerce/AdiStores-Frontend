@@ -87,19 +87,24 @@ function Register() {
     };
 
     return (
-        <div className="flex flex-col gap-5 max-w-3xl mx-auto mt-10">
+        <div className="flex flex-col gap-8 max-w-3xl mx-auto mt-10 px-4 sm:px-6 lg:px-8">
             <Toaster position="top-right" />
 
             {/* Header */}
-            <div className="flex flex-col items-center relative">
-                <h1 className="text-3xl font-medium font-archivo">Create an Account</h1>
-                <p className="text-md font-normal text-gray-500 font-inter">
+            <div className="flex flex-col items-center text-center relative">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-medium font-archivo">
+                    Create an Account
+                </h1>
+                <p className="text-sm sm:text-base lg:text-lg font-normal text-gray-500 font-inter">
                     Join us and start your journey
                 </p>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-5">
+            <form
+                onSubmit={handleSubmit}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full"
+            >
                 {/* Normal fields */}
                 {[
                     { label: "First Name", name: "firstName", type: "text", placeholder: "John", required: true },
@@ -110,7 +115,7 @@ function Register() {
                     { label: "Address", name: "address", type: "text", placeholder: "123 Main St", required: true },
                 ].map((field, idx) => (
                     <div key={idx} className="flex flex-col gap-2">
-                        <label className="text-xl font-normal font-inter">{field.label}</label>
+                        <label className="text-base sm:text-lg lg:text-xl font-normal font-inter">{field.label}</label>
                         <input
                             type={field.type}
                             name={field.name}
@@ -118,7 +123,7 @@ function Register() {
                             onChange={handleChange}
                             placeholder={field.placeholder}
                             autoComplete="on"
-                            className="p-2 rounded-lg border-2 border-[#dee1e6ff] focus:border-blue-500 outline-none transition"
+                            className="p-2 rounded-lg border-2 border-[#dee1e6ff] focus:border-blue-500 outline-none transition text-sm sm:text-base"
                             required={field.required}
                         />
                     </div>
@@ -126,7 +131,7 @@ function Register() {
 
                 {/* Password field */}
                 <div className="flex flex-col gap-2 relative">
-                    <label className="text-xl font-normal font-inter">Password</label>
+                    <label className="text-base sm:text-lg lg:text-xl font-normal font-inter">Password</label>
                     <input
                         type={showPassword ? "text" : "password"}
                         name="password"
@@ -134,13 +139,13 @@ function Register() {
                         onChange={handleChange}
                         placeholder="*******"
                         autoComplete="on"
-                        className="p-2 pr-10 rounded-lg border-2 border-[#dee1e6ff] focus:border-blue-500 outline-none transition"
+                        className="p-2 pr-10 rounded-lg border-2 border-[#dee1e6ff] focus:border-blue-500 outline-none transition text-sm sm:text-base"
                         required
                     />
                     <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="absolute right-3 top-12 text-gray-500 hover:text-black"
+                        className="absolute right-3 top-10 text-gray-500 hover:text-black"
                     >
                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -148,7 +153,7 @@ function Register() {
 
                 {/* Confirm Password field */}
                 <div className="flex flex-col gap-2 relative">
-                    <label className="text-xl font-normal font-inter">Confirm Password</label>
+                    <label className="text-base sm:text-lg lg:text-xl font-normal font-inter">Confirm Password</label>
                     <input
                         type={showConfirmPassword ? "text" : "password"}
                         name="confirmPassword"
@@ -156,13 +161,13 @@ function Register() {
                         onChange={handleChange}
                         placeholder="*******"
                         autoComplete="on"
-                        className="p-2 pr-10 rounded-lg border-2 border-[#dee1e6ff] focus:border-blue-500 outline-none transition"
+                        className="p-2 pr-10 rounded-lg border-2 border-[#dee1e6ff] focus:border-blue-500 outline-none transition text-sm sm:text-base"
                         required
                     />
                     <button
                         type="button"
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
-                        className="absolute right-3 top-12 text-gray-500 hover:text-black"
+                        className="absolute right-3 top-10 text-gray-500 hover:text-black"
                     >
                         {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                     </button>
@@ -172,15 +177,15 @@ function Register() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className={`col-span-full w-[70%] place-self-center p-3 rounded-md border border-[#dee1e6ff] text-black font-inter 
-            hover:bg-blue-500 hover:text-white focus:ring-2 focus:ring-blue-300 active:scale-95 transition-all
-            ${loading ? "opacity-70 cursor-not-allowed bg-gray-300" : ""}`}
+                    className={`col-span-full w-full sm:w-[70%] place-self-center p-3 rounded-md border border-[#dee1e6ff] text-black font-inter 
+      hover:bg-blue-500 hover:text-white focus:ring-2 focus:ring-blue-300 active:scale-95 transition-all
+      ${loading ? "opacity-70 cursor-not-allowed bg-gray-300" : ""}`}
                 >
                     {loading ? (
                         <span className="flex items-center justify-center gap-2">
-                          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                          Signing Up...
-                        </span>
+          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          Signing Up...
+        </span>
                     ) : (
                         "Sign Up"
                     )}
@@ -188,13 +193,14 @@ function Register() {
             </form>
 
             {/* Login Link */}
-            <span className="flex gap-1 place-self-center mt-3">
-                <p className="text-[#565d6dff] font-inter">Already have an account?</p>
-                <Link to="/login" className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]">
-                    Login
-                </Link>
-            </span>
+            <span className="flex gap-1 place-self-center mt-3 text-sm sm:text-base">
+    <p className="text-[#565d6dff] font-inter">Already have an account?</p>
+    <Link to="/login" className="font-inter text-[#636ae8ff] hover:text-[#171A1FFF]">
+      Login
+    </Link>
+  </span>
         </div>
+
     );
 }
 

@@ -43,9 +43,9 @@ function Product() {
                 <Accordion
                     type="single"
                     collapsible
-                    className="w-full overflow-y-auto max-h-[70vh] flex flex-col gap-3"
+                    className="w-full  flex flex-col gap-3"
                 >
-                    <AccordionItem value="category" className="border-none">
+                    <AccordionItem value="category" className="border-none overflow-y-auto max-h-[70vh]">
                         <AccordionTrigger className="text-base font-medium bg-white hover:bg-gray-100 rounded-md px-2 py-2 transition border border-gray-300 ">
                             Categories
                         </AccordionTrigger>

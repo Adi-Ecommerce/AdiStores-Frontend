@@ -1,12 +1,12 @@
 import React, { useState,useContext } from "react";
 import { useNavigate,Link } from "react-router-dom";
-import {AuthContext} from "../../context/AuthContext";
+import AuthContext from "../../context/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react"; // 👈 Import Lucide icons
 
 function Register() {
     const BackendURL=import.meta.env.VITE_BACKEND_URL;
-    const {login,logout}=useContext(AuthContext);
+    const {login}=useContext(AuthContext);
     const [formData, setFormData] = useState({
         firstName: "",
         middleName: "",

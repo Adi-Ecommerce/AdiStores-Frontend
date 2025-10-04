@@ -1,11 +1,22 @@
 import React from 'react'
 import {createContext,useState,useEffect} from "react";
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
+export default AuthContext
 
 export const AuthProvider = ({children}) => {
-    const [user,setUser] = useState(null);
+    const [user,setUser] = useState(() => {
+        try {
+            const storedUser = localStorage.getItem("user");
+            if (!storedUser || storedUser === "undefined") return null;
+            return JSON.parse(storedUser);
+        } catch (error) {
+            console.error("Error parsing stored user:", error);
+            return null;
+        }
+    });
     const [token,setToken] = useState(localStorage.getItem('token') || null);
+
     useEffect(()=>{
         if(token){
             localStorage.setItem('token',token)
@@ -14,6 +25,12 @@ export const AuthProvider = ({children}) => {
             localStorage.removeItem('token')
         }
     },[token])
+
+    useEffect(() => {
+        if (user) localStorage.setItem("user", JSON.stringify(user));
+        else localStorage.removeItem("user");
+    }, [user]);
+
     const login = (userData , jwttoken) => {
         setUser(userData);
         setToken(jwttoken);

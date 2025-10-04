@@ -15,6 +15,7 @@ export const AuthProvider = ({children}) => {
             return null;
         }
     });
+    const [productsId,setProductId] = useState(67)
     const [token,setToken] = useState(localStorage.getItem('token') || null);
 
     useEffect(()=>{
@@ -40,7 +41,7 @@ export const AuthProvider = ({children}) => {
         setToken(null);
         localStorage.removeItem('token');
     }
-    const value = {user,token,login,logout};
+    const value = {user,token,login,logout,productsId,setProductId};
 
   return (
     <AuthContext.Provider value={value}>

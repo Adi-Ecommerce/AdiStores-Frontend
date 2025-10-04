@@ -1,0 +1,145 @@
+import React,{useState,useEffect,useContext} from "react";
+import { motion } from "motion/react";
+import { Button } from "../../components/ui/button"; // adjust path
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "../../components/ui/drawer"; // adjust path
+import { Fingerprint } from "lucide-react";
+import axios from "axios";
+import AuthContext from "../../context/AuthContext.jsx";
+
+function PriceTag({ price, discountedPrice }) {
+
+
+    return (
+        <div className="flex items-center justify-around gap-4 max-w-fit mx-auto">
+            <div className="flex items-baseline gap-2">
+        <span className="text-4xl font-bold bg-gradient-to-br from-zinc-900 to-zinc-700 dark:from-white dark:to-zinc-300 bg-clip-text text-transparent">
+          ${discountedPrice}
+        </span>
+                <span className="text-lg line-through text-zinc-400 dark:text-zinc-500">
+          ${price}
+        </span>
+            </div>
+            <div className="flex flex-col items-center gap-0.5">
+        <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+          Lifetime access
+        </span>
+                <span className="text-xs text-zinc-700 dark:text-zinc-300">
+          One-time payment
+        </span>
+            </div>
+        </div>
+    );
+}
+
+const drawerVariants = {
+    hidden: { y: "100%", opacity: 0, rotateX: 5, transition: { type: "spring", stiffness: 300, damping: 30 } },
+    visible: { y: 0, opacity: 1, rotateX: 0, transition: { type: "spring", stiffness: 300, damping: 30, mass: 0.8, staggerChildren: 0.07, delayChildren: 0.2 } },
+};
+
+const itemVariants = {
+    hidden: { y: 20, opacity: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
+    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 30, mass: 0.8 } },
+};
+
+export default function SmoothDrawer({ onPreview }) {
+    const handleSecondaryClick = () => {};
+    const BackendURL = import.meta.env.VITE_BACKEND_URL;
+    const [product, setProduct] = useState(null);
+    const {productsId} = useContext(AuthContext);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (!productsId) return; // safety
+                const response = await axios.get(`${BackendURL}/api/Product/${productsId}`);
+                setProduct(response.data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchData();
+    }, [productsId, BackendURL]); // ✅ re-fetch whenever productsId changes
+
+    if (!product) return null;
+    const truncateWords = (text, wordLimit) => {
+        if (!text) return "";
+        const words = text.split(" ");
+        return words.length > wordLimit
+            ? words.slice(0, wordLimit).join(" ") + "..."
+            : text;
+    };
+
+    return (
+        <Drawer>
+            <DrawerTrigger asChild>
+                <Button variant="default" onClick={onPreview} >Preview</Button>
+            </DrawerTrigger>
+
+            <DrawerContent className="max-w-fit mx-auto p-6 rounded-2xl shadow-xl">
+                <motion.div
+                    variants={drawerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="mx-auto w-full max-w-[340px] space-y-6"
+                >
+                    <motion.div variants={itemVariants}>
+                        <DrawerHeader className="px-0 space-y-2.5">
+                            <DrawerTitle className="text-2xl font-semibold flex items-center gap-2.5 tracking-tighter">
+                                <motion.div variants={itemVariants}>
+                                    <div className="p-1.5 rounded-xl bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 shadow-inner">
+                                        <img src="/logo.svg" alt="Logo" className="hidden dark:block w-8 h-8" />
+                                        <img src="/logo-black.svg" alt="Logo" className="block dark:hidden w-8 h-8" />
+                                    </div>
+                                </motion.div>
+                                <motion.span variants={itemVariants}>{truncateWords(product.name,5)}</motion.span>
+                            </DrawerTitle>
+                            <motion.div variants={itemVariants}>
+                                <DrawerDescription className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 tracking-tighter">
+                                    {truncateWords(product.description, 20)}
+                                </DrawerDescription>
+                            </motion.div>
+                        </DrawerHeader>
+                    </motion.div>
+
+                    <motion.div variants={itemVariants}>
+                        <PriceTag price={product.price} discountedPrice={((33/100)*product.price).toFixed(2)} />
+                    </motion.div>
+
+                    <motion.div variants={itemVariants}>
+                        <DrawerFooter className="flex flex-col gap-3 px-0">
+                            <div className="w-full">
+                                <a
+                                    href="https://kokonutui.pro/#pricing"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="group w-full relative overflow-hidden inline-flex items-center justify-center h-11 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 dark:from-rose-600 dark:to-pink-600 text-white text-sm font-semibold tracking-wide shadow-lg shadow-rose-500/20 transition-all duration-500 hover:shadow-xl hover:shadow-rose-500/30 hover:from-rose-600 hover:to-pink-600 dark:hover:from-rose-500 dark:hover:to-pink-500"
+                                >
+                                    Add to Cart
+                                </a>
+                            </div>
+
+                            <DrawerClose asChild>
+                                <Button
+                                    variant="outline"
+                                    onClick={handleSecondaryClick}
+                                    className="w-full h-11 rounded-xl border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800/80 text-sm font-semibold transition-colors tracking-tighter"
+                                >
+                                   Product Details
+                                </Button>
+                            </DrawerClose>
+                        </DrawerFooter>
+                    </motion.div>
+                </motion.div>
+            </DrawerContent>
+        </Drawer>
+    );
+}

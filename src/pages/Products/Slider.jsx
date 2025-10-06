@@ -1,26 +1,17 @@
-'use client';
-
-import React, { useId } from 'react';
+import React, { useId, useContext, useEffect } from 'react';
 import { useSliderInput } from '@/hooks/use-slider-input';
 import { Input } from '@/components/ui/base-input';
 import { Label } from '@/components/ui/base-label';
 import { Slider, SliderThumb } from '@/components/ui/base-slider';
-
-const items = [
-    { id: 1, price: 20 },
-    { id: 2, price: 95 },
-    { id: 3, price: 110 },
-    { id: 4, price: 125 },
-    { id: 5, price: 130 },
-    { id: 6, price: 900 },
-];
+import AuthContext from '../../context/AuthContext.jsx';
 
 function PriceRangeSlider() {
     const id = useId();
+    const { priceRange, setPriceRange } = useContext(AuthContext);
 
-    // Calculate min and max prices
-    const minValue = Math.min(...items.map((item) => item.price));
-    const maxValue = Math.max(...items.map((item) => item.price));
+    // Set min and max based on typical product range
+    const minValue = 0;
+    const maxValue = 1000;
 
     // Use your custom hook for handling slider/input state
     const {
@@ -32,8 +23,13 @@ function PriceRangeSlider() {
     } = useSliderInput({
         minValue,
         maxValue,
-        initialValue: [200, 800],
+        initialValue: priceRange,
     });
+
+    // Update context when slider changes
+    useEffect(() => {
+        setPriceRange(sliderValues);
+    }, [sliderValues, setPriceRange]);
 
     return (
         <div className="space-y-4 p-2">

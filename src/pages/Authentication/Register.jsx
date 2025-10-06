@@ -54,7 +54,7 @@ function Register() {
         setLoading(true);
 
         try {
-            const response = await fetch(`${BackendURL}/api/Users/register`,
+            const response = await fetch(`/api/Users/register`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

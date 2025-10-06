@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { Button } from "../../components/ui/button.jsx";
 import ProductList from "./ProductList.jsx";
 import axios from "axios";
 import {
@@ -10,23 +9,81 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 import PriceRangeSlider from './Slider.jsx';
+import AuthContext from "../../context/AuthContext.jsx";
 
 function Product() {
     const BackendURL = import.meta.env.VITE_BACKEND_URL;
     const [categories, setCategories] = useState([]);
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+    const { selectedCategories, setSelectedCategories } = useContext(AuthContext);
+    // useEffect(() => {
+    //     console.log('Product.jsx - selectedCategories:', selectedCategories);
+    // }, [selectedCategories]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${BackendURL}/api/Category`);
+                const response = await axios.get(`/api/Category`);
                 setCategories(response.data);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
         fetchData();
-    }, []);
+    }, [BackendURL]);
+
+    const handleCategoryChange = (categoryId) => {
+        setSelectedCategories(prev => {
+            if (prev.includes(categoryId)) {
+                // console.log(
+                //     'Removing category:',
+                //     categoryId,
+                //     'Type:',
+                //     typeof categoryId,
+                //     'current state:',
+                //     prev  // ← Changed from selectedCategories to prev
+                // );
+                return prev.filter(id => id !== categoryId);
+            } else {
+                // console.log(
+                //     'Adding category:',
+                //     categoryId,
+                //     'Type:',
+                //     typeof categoryId,
+                //     'current state:',
+                //     prev  // ← Changed from selectedCategories to prev
+                // );
+                return [...prev, categoryId];
+            }
+        });
+    };
+
+
+
+
+
+    const CategoryCheckboxes = () => (
+        <>
+            {categories.length > 0 ? (
+                categories.map((category) => (
+                    <label
+                        key={category.id}
+                        className="flex items-center gap-2 text-gray-700 hover:text-black cursor-pointer"
+                    >
+                        <input
+                            type="checkbox"
+                            className="accent-blue-500"
+                            checked={selectedCategories.includes(category.id)}
+                            onChange={() => handleCategoryChange(category.id)}
+                        />
+                        {category.name}
+                    </label>
+                ))
+            ) : (
+                <p className="text-sm text-gray-500">No categories found.</p>
+            )}
+        </>
+    );
 
     return (
         <div className="flex flex-col lg:flex-row w-full min-h-screen border-t border-gray-200">
@@ -52,19 +109,7 @@ function Product() {
                                     Categories
                                 </AccordionTrigger>
                                 <AccordionContent className="flex flex-col gap-2 px-3 py-2">
-                                    {categories.length > 0 ? (
-                                        categories.map((category, index) => (
-                                            <label
-                                                key={index}
-                                                className="flex items-center gap-2 text-gray-700 hover:text-black cursor-pointer"
-                                            >
-                                                <input type="checkbox" className="accent-blue-500" />
-                                                {category.name}
-                                            </label>
-                                        ))
-                                    ) : (
-                                        <p className="text-sm text-gray-500">No categories found.</p>
-                                    )}
+                                    <CategoryCheckboxes />
                                 </AccordionContent>
                             </AccordionItem>
 
@@ -95,19 +140,7 @@ function Product() {
                             Categories
                         </AccordionTrigger>
                         <AccordionContent className="flex flex-col gap-2 px-3 py-2">
-                            {categories.length > 0 ? (
-                                categories.map((category, index) => (
-                                    <label
-                                        key={index}
-                                        className="flex items-center gap-2 text-gray-700 hover:text-black cursor-pointer"
-                                    >
-                                        <input type="checkbox" className="accent-blue-500" />
-                                        {category.name}
-                                    </label>
-                                ))
-                            ) : (
-                                <p className="text-sm text-gray-500">No categories found.</p>
-                            )}
+                            <CategoryCheckboxes />
                         </AccordionContent>
                     </AccordionItem>
 

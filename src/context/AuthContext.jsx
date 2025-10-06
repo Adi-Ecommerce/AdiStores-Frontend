@@ -1,6 +1,5 @@
 import React from 'react'
 import {createContext,useState,useEffect} from "react";
-
 const AuthContext = createContext();
 export default AuthContext
 
@@ -15,13 +14,19 @@ export const AuthProvider = ({children}) => {
             return null;
         }
     });
-    const [productsId,setProductId] = useState(67)
+    const [productsId,setProductId] = useState(null)
     const [token,setToken] = useState(localStorage.getItem('token') || null);
+
+    // Filter states
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    useEffect(() => {
+        console.log('selectedCategories changed:', selectedCategories);
+    }, [selectedCategories]);
+    const [priceRange, setPriceRange] = useState([0, 1000]);
 
     useEffect(()=>{
         if(token){
             localStorage.setItem('token',token)
-
         }else {
             localStorage.removeItem('token')
         }
@@ -41,13 +46,23 @@ export const AuthProvider = ({children}) => {
         setToken(null);
         localStorage.removeItem('token');
     }
-    const value = {user,token,login,logout,productsId,setProductId};
 
-  return (
-    <AuthContext.Provider value={value}>
-        {children}
-    </AuthContext.Provider>
-  )
+    const value = {
+        user,
+        token,
+        login,
+        logout,
+        productsId,
+        setProductId,
+        selectedCategories,
+        setSelectedCategories,
+        priceRange,
+        setPriceRange
+    };
+
+    return (
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
-
-

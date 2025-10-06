@@ -20,7 +20,7 @@ export const AuthProvider = ({children}) => {
     // Filter states
     const [selectedCategories, setSelectedCategories] = useState([]);
     useEffect(() => {
-        console.log('selectedCategories changed:', selectedCategories);
+        // console.log('selectedCategories changed:', selectedCategories);
     }, [selectedCategories]);
     const [priceRange, setPriceRange] = useState([0, 1000]);
 

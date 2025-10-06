@@ -8,9 +8,9 @@ import AuthContext from "../../context/AuthContext.jsx";
 function ProductList() {
     const BackendURL = import.meta.env.VITE_BACKEND_URL;
     const {setProductId, selectedCategories, priceRange} = useContext(AuthContext);
-    useEffect(() => {
-        console.log('ProductList.jsx - selectedCategories:', selectedCategories);
-    }, [selectedCategories]);
+    // useEffect(() => {
+    //     console.log('ProductList.jsx - selectedCategories:', selectedCategories);
+    // }, [selectedCategories]);
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
@@ -21,32 +21,32 @@ function ProductList() {
     // Fetch products with filters
     useEffect(() => {
         const fetchData = async () => {
-            console.log('🔍 Fetching with selectedCategories:', selectedCategories, 'priceRange:', priceRange);
+            // console.log('🔍 Fetching with selectedCategories:', selectedCategories, 'priceRange:', priceRange);
             setLoading(true);
             try {
                 let allProducts = [];
 
                 // If categories are selected, fetch by category
                 if (selectedCategories.length > 0) {
-                    console.log('📦 Fetching products for categories:', selectedCategories);
+                    // console.log('📦 Fetching products for categories:', selectedCategories);
                     const categoryPromises = selectedCategories.map(categoryId => {
-                        console.log('🌐 API call for category:', categoryId, 'URL:', `/api/Product/by-category/${categoryId}`);
+                        // console.log('🌐 API call for category:', categoryId, 'URL:', `/api/Product/by-category/${categoryId}`);
                         return axios.get(`/api/Product/by-category/${categoryId}`)
                     });
 
                     const categoryResponses = await Promise.all(categoryPromises);
-                    console.log('📥 Category responses:', categoryResponses);
+                    // console.log('📥 Category responses:', categoryResponses);
                     // Combine all products and remove duplicates
                     const productsMap = new Map();
                     categoryResponses.forEach(response => {
-                        console.log('📦 Processing response with', response.data.length, 'products');
+                        // console.log('📦 Processing response with', response.data.length, 'products');
                         response.data.forEach(product => {
                             productsMap.set(product.id, product);
                         });
                     });
 
                     allProducts = Array.from(productsMap.values());
-                    console.log('📊 Total unique products before price filter:', allProducts.length);
+                    // console.log('📊 Total unique products before price filter:', allProducts.length);
                 } else {
                     // Fetch all products if no category selected
                     const response = await axios.get(`/api/product`);
@@ -57,8 +57,8 @@ function ProductList() {
                 const filteredProducts = allProducts.filter(
                     product => product.price >= priceRange[0] && product.price <= priceRange[1]
                 );
-                console.log('💰 Products after price filter:', filteredProducts.length);
-                console.log('💰 Sample product prices:', allProducts.slice(0, 5).map(p => p.price));
+                // console.log('💰 Products after price filter:', filteredProducts.length);
+                // console.log('💰 Sample product prices:', allProducts.slice(0, 5).map(p => p.price));
 
                 // Shuffle products
                 const shuffled = filteredProducts.sort(() => Math.random() - 0.5);

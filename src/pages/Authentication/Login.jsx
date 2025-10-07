@@ -29,7 +29,7 @@ function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch("/api/Users/login",{
+            const response = await fetch(`${BackendURL}/api/Users/login`,{
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData), // only email + password

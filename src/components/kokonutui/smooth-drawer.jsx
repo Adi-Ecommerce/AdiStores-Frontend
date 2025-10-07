@@ -48,6 +48,7 @@ const itemVariants = {
 };
 
 export default function SmoothDrawer({ onPreview, productId }) {
+    const BackendURL = import.meta.env.VITE_BACKEND_URL;
     const handleSecondaryClick = () => {};
     const [product, setProduct] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
@@ -58,7 +59,7 @@ export default function SmoothDrawer({ onPreview, productId }) {
 
         const fetchData = async () => {
             try {
-                const response = await axios.get(`/api/Product/${productId}`);
+                const response = await axios.get(`${BackendURL}/api/Product/${productId}`);
                 setProduct(response.data);
             } catch (error) {
                 console.error("Error fetching product:", error);

@@ -31,7 +31,7 @@ function ProductList() {
                     // console.log('📦 Fetching products for categories:', selectedCategories);
                     const categoryPromises = selectedCategories.map(categoryId => {
                         // console.log('🌐 API call for category:', categoryId, 'URL:', `/api/Product/by-category/${categoryId}`);
-                        return axios.get(`/api/Product/by-category/${categoryId}`)
+                        return axios.get(`${BackendURL}/api/Product/by-category/${categoryId}`)
                     });
 
                     const categoryResponses = await Promise.all(categoryPromises);
@@ -49,7 +49,7 @@ function ProductList() {
                     // console.log('📊 Total unique products before price filter:', allProducts.length);
                 } else {
                     // Fetch all products if no category selected
-                    const response = await axios.get(`/api/product`);
+                    const response = await axios.get(`${BackendURL}/api/product`);
                     allProducts = response.data;
                 }
 

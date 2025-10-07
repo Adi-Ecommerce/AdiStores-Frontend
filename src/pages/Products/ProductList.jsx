@@ -114,36 +114,43 @@ function ProductList() {
             </div>
 
             {/* Product Grid */}
-            <div
-                ref={gridRef}
-                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 max-h-screen overflow-y-scroll"
-            >
-                {currentProducts.length > 0 ? (
-                    currentProducts.map((product) => (
-                        <div
-                            key={product.id}
-                            className="border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition p-4 flex flex-col items-center text-center bg-white"
-                        >
-                            <img
-                                src={product.image}
-                                alt={product.name}
-                                className="w-full h-48 sm:h-56 md:h-48 lg:h-52 object-cover mb-3 rounded-md"
-                            />
-                            <p className="font-medium text-gray-800">{truncateWords(product.name, 5)}</p>
-                            <p className="text-sm text-gray-500 mb-3">${product.price}</p>
-                            <SmoothDrawer
-                                productId={product.id}
-                                onPreview={() => setProductId(product.id)}
-                            />
+            <div className="relative">
+                <div className="pointer-events-none absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-gray-50 via-white/40 to-transparent z-100"></div>
+                <div
+                    ref={gridRef}
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 max-h-screen overflow-y-scroll relative"
+                >
+
+
+                    {currentProducts.length > 0 ? (
+                        currentProducts.map((product) => (
+                            <div
+                                key={product.id}
+                                className="border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition p-4 flex flex-col items-center text-center bg-white"
+                            >
+                                <img
+                                    src={product.image}
+                                    alt={product.name}
+                                    className="w-full h-48 sm:h-56 md:h-48 lg:h-52 object-cover mb-3 rounded-md"
+                                />
+                                <p className="font-medium text-gray-800">{truncateWords(product.name, 5)}</p>
+                                <p className="text-sm text-gray-500 mb-3">${product.price}</p>
+                                <SmoothDrawer
+                                    productId={product.id}
+                                    onPreview={() => setProductId(product.id)}
+                                />
+                            </div>
+                        ))
+                    ) : (
+                        <div className="col-span-full text-center py-12">
+                            <p className="text-gray-500 text-lg">No products found matching your filters.</p>
+                            <p className="text-gray-400 text-sm mt-2">Try adjusting your filters to see more results.</p>
                         </div>
-                    ))
-                ) : (
-                    <div className="col-span-full text-center py-12">
-                        <p className="text-gray-500 text-lg">No products found matching your filters.</p>
-                        <p className="text-gray-400 text-sm mt-2">Try adjusting your filters to see more results.</p>
-                    </div>
-                )}
+                    )}
+                </div>
+
             </div>
+
 
             {/* Pagination */}
             {totalPages > 1 && (

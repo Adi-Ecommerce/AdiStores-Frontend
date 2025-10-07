@@ -102,14 +102,14 @@ export default function SmoothDrawer({ onPreview, productId }) {
                     >
                         <motion.div variants={itemVariants}>
                             <DrawerHeader className="px-0 space-y-2.5">
-                                <DrawerTitle className="text-2xl font-semibold flex items-center gap-2.5 tracking-tighter">
-                                    <motion.div variants={itemVariants}>
+                                <DrawerTitle className="text-2xl font-semibold flex items-center gap-2.5 tracking-tighter p-2">
+                                    <motion.div variants={itemVariants} className="flex-1/3">
                                         <div className="p-1.5 rounded-xl bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-900 shadow-inner">
-                                            <img src="/logo.svg" alt="Logo" className="hidden dark:block w-8 h-8" />
-                                            <img src="/logo-black.svg" alt="Logo" className="block dark:hidden w-8 h-8" />
+                                            <img src={product.image} alt="Logo" className="hidden dark:block w-30 h-30 object-cover rounded-md" />
+                                            <img src={product.image} alt="Logo" className="block dark:hidden w-30 h-30 object-cover rounded-md" />
                                         </div>
                                     </motion.div>
-                                    <motion.span variants={itemVariants}>{truncateWords(product.name, 5)}</motion.span>
+                                    <motion.span variants={itemVariants} className={`flex-2/3`}>{truncateWords(product.name, 5)}</motion.span>
                                 </DrawerTitle>
                                 <motion.div variants={itemVariants}>
                                     <DrawerDescription className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 tracking-tighter">
@@ -130,7 +130,8 @@ export default function SmoothDrawer({ onPreview, productId }) {
                                         href="https://kokonutui.pro/#pricing"
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="group w-full relative overflow-hidden inline-flex items-center justify-center h-11 rounded-xl bg-gradient-to-r from-rose-500 to-pink-500 dark:from-rose-600 dark:to-pink-600 text-white text-sm font-semibold tracking-wide shadow-lg shadow-rose-500/20 transition-all duration-500 hover:shadow-xl hover:shadow-rose-500/30 hover:from-rose-600 hover:to-pink-600 dark:hover:from-rose-500 dark:hover:to-pink-500"
+                                        className="group w-full relative overflow-hidden inline-flex items-center justify-center h-11 rounded-xl bg-gradient-to-r from-neutral-800 to-neutral-900 dark:from-neutral-900 dark:to-black text-white text-sm font-semibold tracking-wide shadow-lg shadow-black/20 transition-all duration-500 hover:shadow-xl hover:shadow-black/30 hover:from-neutral-700 hover:to-neutral-800 dark:hover:from-neutral-800 dark:hover:to-neutral-950"
+
                                     >
                                         Add to Cart
                                     </a>

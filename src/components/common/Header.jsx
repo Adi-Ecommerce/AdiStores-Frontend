@@ -7,6 +7,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import {useCart} from "../../context/CartContext";
+import ProfileMenu from "../common/ProfileMenu";
+import MenuDemo from "../common/ProfileMenu";
 
 
 function Header() {
@@ -16,7 +18,7 @@ function Header() {
         setMenuOpen(false);
     }
     return (
-        <header className="flex justify-between items-center p-3 md:px-6 lg:px-10 bg-black text-white relative">
+        <header className="flex justify-between items-center p-3 md:px-6 lg:px-10 bg-black text-white relative z-[999999]">
             {/* Logo */}
             <div className="flex items-center">
                 <img
@@ -57,6 +59,7 @@ function Header() {
                         <ShoppingCartIcon className="!text-sm md:!text-base lg:!text-lg" />
                         <p className="text-xs md:text-sm lg:text-base xl:text-lg font-normal">Cart</p>
                     </Link>
+                    <MenuDemo/>
                 </div>
             </aside>
 

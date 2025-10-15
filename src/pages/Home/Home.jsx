@@ -17,12 +17,12 @@ function Home() {
         return () => clearTimeout(timer)
     },[])
     return (
-        <>
+        <div className="">
             <Swipe />
             <div ref={TopCategories}>
                 <TopCats />
             </div>
-        </>
+        </div>
     );
 }
 

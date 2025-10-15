@@ -1,5 +1,6 @@
 import React from 'react'
 import {createContext,useState,useEffect} from "react";
+import {useCart} from "./CartContext";
 const AuthContext = createContext();
 export default AuthContext
 
@@ -45,6 +46,8 @@ export const AuthProvider = ({children}) => {
         setUser(null);
         setToken(null);
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        // Cart will be automatically cleared when user logs out since CartContext checks for token
     }
 
     const value = {

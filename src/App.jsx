@@ -8,31 +8,39 @@ import Products from './pages/Products/Product';
 import ProductList from './pages/Products/ProductList';
 import Profile from './pages/Profile';
 import Cart from "./pages/Cart/Cart.jsx";
-import {AuthProvider} from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/common/PrivateRoute";
-
-
+import { CartProvider } from "./context/CartContext";
 
 function App() {
-  return (
-   <AuthProvider>
-       <Router>
-           <Routes>
-               <Route element={<AuthLayout/>}>
-                   <Route path='/login' element={<Login />} />
-                   <Route path='/' element={<Register/>} />
-               </Route>
-               <Route element={<PrivateRoute><MainLayout/></PrivateRoute>} >
-                   <Route path='/home' element={<Home/>} />
-                   <Route path='/products' element={<Products/>} />
-                   <Route path='/products/:id' element={<ProductList/>} />
-                   <Route path="/profile" element={<Profile/>} />
-                   <Route path="/cart" element={<Cart/>} />
-               </Route>
-           </Routes>
-       </Router>
-   </AuthProvider>
-  );
+    return (
+        <AuthProvider>
+            <Router>
+                <Routes>
+                    {/* Public routes - no CartProvider needed */}
+                    <Route element={<AuthLayout />}>
+                        <Route path='/login' element={<Login />} />
+                        <Route path='/' element={<Register />} />
+                    </Route>
+
+                    {/* Protected routes - wrapped with CartProvider */}
+                    <Route element={
+                        <PrivateRoute>
+                            <CartProvider>
+                                <MainLayout />
+                            </CartProvider>
+                        </PrivateRoute>
+                    }>
+                        <Route path='/home' element={<Home />} />
+                        <Route path='/products' element={<Products />} />
+                        <Route path='/products/:id' element={<ProductList />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/cart" element={<Cart />} />
+                    </Route>
+                </Routes>
+            </Router>
+        </AuthProvider>
+    );
 }
 
-export default App
+export default App;

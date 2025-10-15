@@ -6,10 +6,12 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
+import {useCart} from "../../context/CartContext";
 
 
 function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
+    const {cartCount} = useCart();
     const closeMenu = () => {
         setMenuOpen(false);
     }
@@ -94,9 +96,14 @@ function Header() {
                             <PersonIcon />
                             <p>Profile</p>
                         </Link>
-                        <Link to='/cart' onClick={closeMenu} className="flex gap-1 items-center hover:text-blue-400">
-                            <ShoppingCartIcon />
-                            <p>Cart</p>
+                        <Link to='/cart' className="flex gap-1 items-center hover:text-blue-400 relative">
+                            <ShoppingCartIcon className="!text-sm md:!text-base lg:!text-lg" />
+                            <p className="text-xs md:text-sm lg:text-base xl:text-lg font-normal">Cart</p>
+                            {cartCount > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+            {cartCount > 9 ? '9+' : cartCount}
+        </span>
+                            )}
                         </Link>
                     </div>
                 </div>

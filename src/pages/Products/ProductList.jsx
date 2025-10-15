@@ -8,9 +8,6 @@ import AuthContext from "../../context/AuthContext.jsx";
 function ProductList() {
     const BackendURL = import.meta.env.VITE_BACKEND_URL;
     const {setProductId, selectedCategories, priceRange} = useContext(AuthContext);
-    // useEffect(() => {
-    //     console.log('ProductList.jsx - selectedCategories:', selectedCategories);
-    // }, [selectedCategories]);
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
@@ -18,37 +15,41 @@ function ProductList() {
 
     const gridRef = useRef(null);
 
+    // Scroll to top of product grid
+    const scrollToTop = () => {
+        gridRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
     // Fetch products with filters
     useEffect(() => {
         const fetchData = async () => {
-            // console.log('🔍 Fetching with selectedCategories:', selectedCategories, 'priceRange:', priceRange);
             setLoading(true);
             try {
                 let allProducts = [];
 
-                // If categories are selected, fetch by category
                 if (selectedCategories.length > 0) {
-                    // console.log('📦 Fetching products for categories:', selectedCategories);
-                    const categoryPromises = selectedCategories.map(categoryId => {
-                        // console.log('🌐 API call for category:', categoryId, 'URL:', `/api/Product/by-category/${categoryId}`);
-                        return axios.get(`${BackendURL}/api/Product/by-category/${categoryId}`)
-                    });
+                    console.log('🔍 Fetching categories:', selectedCategories);
 
-                    const categoryResponses = await Promise.all(categoryPromises);
-                    // console.log('📥 Category responses:', categoryResponses);
-                    // Combine all products and remove duplicates
+                    const categoryPromises = selectedCategories.map(categoryId =>
+                        axios.get(`${BackendURL}/api/Product/by-category/${categoryId}`)
+                    );
+
+                    const responses = await Promise.all(categoryPromises);
                     const productsMap = new Map();
-                    categoryResponses.forEach(response => {
-                        // console.log('📦 Processing response with', response.data.length, 'products');
-                        response.data.forEach(product => {
-                            productsMap.set(product.id, product);
-                        });
+
+                    responses.forEach((response, index) => {
+                        console.log(`📦 Category ${selectedCategories[index]}:`, response.data?.length || 0, 'products');
+                        if (response.data && Array.isArray(response.data)) {
+                            response.data.forEach(product => {
+                                productsMap.set(product.id, product);
+                            });
+                        }
                     });
 
                     allProducts = Array.from(productsMap.values());
-                    // console.log('📊 Total unique products before price filter:', allProducts.length);
+                    console.log('📊 Total unique products:', allProducts.length);
                 } else {
-                    // Fetch all products if no category selected
                     const response = await axios.get(`${BackendURL}/api/product`);
                     allProducts = response.data;
                 }
@@ -57,15 +58,16 @@ function ProductList() {
                 const filteredProducts = allProducts.filter(
                     product => product.price >= priceRange[0] && product.price <= priceRange[1]
                 );
-                // console.log('💰 Products after price filter:', filteredProducts.length);
-                // console.log('💰 Sample product prices:', allProducts.slice(0, 5).map(p => p.price));
+                console.log('💰 After price filter:', filteredProducts.length);
 
                 // Shuffle products
                 const shuffled = filteredProducts.sort(() => Math.random() - 0.5);
                 setProducts(shuffled);
-                setCurrentPage(1); // Reset to first page when filters change
+                setCurrentPage(1);
+                scrollToTop();
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("❌ Error fetching products:", error);
+                setProducts([]); // Set empty array on error
             } finally {
                 setLoading(false);
             }
@@ -85,11 +87,7 @@ function ProductList() {
             : text;
     };
 
-    // Scroll to top of product grid
-    const scrollToTop = () => {
-        gridRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
+
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {

@@ -33,34 +33,17 @@ function Product() {
     }, [BackendURL]);
 
     const handleCategoryChange = (categoryId) => {
+        // Ensure we're working with numbers
+        const numericId = Number(categoryId);
+
         setSelectedCategories(prev => {
-            if (prev.includes(categoryId)) {
-                // console.log(
-                //     'Removing category:',
-                //     categoryId,
-                //     'Type:',
-                //     typeof categoryId,
-                //     'current state:',
-                //     prev  // ← Changed from selectedCategories to prev
-                // );
-                return prev.filter(id => id !== categoryId);
+            if (prev.includes(numericId)) {
+                return prev.filter(id => id !== numericId);
             } else {
-                // console.log(
-                //     'Adding category:',
-                //     categoryId,
-                //     'Type:',
-                //     typeof categoryId,
-                //     'current state:',
-                //     prev  // ← Changed from selectedCategories to prev
-                // );
-                return [...prev, categoryId];
+                return [...prev, numericId];
             }
         });
     };
-
-
-
-
 
     const CategoryCheckboxes = () => (
         <>

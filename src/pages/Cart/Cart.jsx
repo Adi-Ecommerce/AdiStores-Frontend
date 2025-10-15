@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
-import CartItem from '../../pages/Cart/CartItem';
-import EmptyCart from '../../pages/Cart/EmptyCart';
+import CartItem from './Cartitem.jsx';
+import EmptyCart from './EmptyCart.jsx';
 
 function Cart() {
     const navigate = useNavigate();

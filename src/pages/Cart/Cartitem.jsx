@@ -28,7 +28,7 @@ function CartItem({ item, onUpdateQuantity, onRemove, loading }) {
             {/* Product Image */}
             <div className="w-full sm:w-24 h-24 flex-shrink-0">
                 <img
-                    src={item.product?.image || '/placeholder-image.png'}
+                    src={item.image || '/placeholder-image.png'}
                     alt={item.product || 'Product'}
                     className="w-full h-full object-cover rounded-md"
                 />

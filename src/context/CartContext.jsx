@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -14,99 +15,64 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }) => {
     const BackendURL = import.meta.env.VITE_BACKEND_URL;
+    const navigate = useNavigate(); // ✅ Add navigation hook
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    // Get token from localStorage
     const getToken = () => localStorage.getItem('token');
 
-    // Create axios instance with auth header
     const api = axios.create({
         baseURL: BackendURL,
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
     });
 
-    // Add token to requests
     api.interceptors.request.use((config) => {
         const token = getToken();
-        console.log('[Cart API] Request to:', config.url);
-        console.log('[Cart API] Token exists:', !!token);
-        console.log('[Cart API] Token preview:', token?.substring(0, 30) + '...');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
+        if (token) config.headers.Authorization = `Bearer ${token}`;
         return config;
     });
 
-    // Handle auth errors - ONLY log out on actual auth failure
     api.interceptors.response.use(
         (response) => response,
         (error) => {
-            console.error('[Cart API error]', {
-                status: error.response?.status,
-                message: error.response?.data?.message,
-                code: error.code,
-                success: error.response?.data?.success,
-                wwwAuthenticate: error.response?.headers?.['www-authenticate'] || ''
-            });
-
             if (error.response?.status === 401) {
-                // Only logout if it's an actual authentication error
-                const errorMessage = error.response?.data?.message?.toLowerCase() || '';
+                const msg = error.response?.data?.message?.toLowerCase() || '';
                 const isAuthError =
-                    errorMessage.includes('unauthorized') ||
-                    errorMessage.includes('token') ||
-                    errorMessage.includes('expired') ||
+                    msg.includes('unauthorized') ||
+                    msg.includes('token') ||
+                    msg.includes('expired') ||
                     error.response?.data?.success === false;
 
                 if (isAuthError) {
-                    console.error('Authentication failed - logging out');
                     toast.error('Session expired. Please login again.');
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
                     window.location.href = '/login';
-                } else {
-                    console.warn('Got 401 but not an auth error, might be a different issue');
                 }
             }
             return Promise.reject(error);
         }
     );
 
-    // Update cart count whenever cart changes
     const cartCount = useMemo(
         () => cart.reduce((sum, item) => sum + item.quantity, 0),
         [cart]
     );
 
-
-    // Fetch cart from API
+    // Fetch cart
     const fetchCart = async () => {
         const token = getToken();
-        if (!token) {
-            console.log('No token found, skipping cart fetch');
-            return;
-        }
-
+        if (!token) return;
         try {
             setLoading(true);
             const response = await api.get('/api/Cart');
-
-            // Check the new response format
-            if (response.data.success && response.data.data) {
+            if (response.data.success && Array.isArray(response.data.data)) {
                 setCart(response.data.data);
-            } else if (response.data.success && !response.data.data) {
-                // Cart is empty
-                setCart([]);
             } else {
-                console.warn('Unexpected response format:', response.data);
                 setCart([]);
             }
         } catch (error) {
             console.error('Error fetching cart:', error);
-            // Don't show error for 401 - interceptor handles it
             if (error.response?.status !== 401) {
                 toast.error('Failed to load cart');
             }
@@ -116,15 +82,11 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    // Add item to cart
+    // Add item
     const addToCart = async (productId, quantity = 1) => {
         try {
             setLoading(true);
-            const response = await api.post('/api/cart/add', {
-                productId,
-                quantity,
-            });
-
+            const response = await api.post('/api/cart/add', { productId, quantity });
             if (response.data.success && response.data.data) {
                 setCart(response.data.data);
                 toast.success(response.data.message || 'Item added to cart!');
@@ -134,28 +96,22 @@ export const CartProvider = ({ children }) => {
                 return false;
             }
         } catch (error) {
-            console.error('Error adding to cart:', error);
-            const errorMsg = error.response?.data?.message || 'Failed to add item';
-            toast.error(errorMsg);
+            toast.error(error.response?.data?.message || 'Failed to add item');
             return false;
         } finally {
             setLoading(false);
         }
     };
 
-    // Update item quantity
+    // Update quantity
     const updateQuantity = async (cartItemId, quantity) => {
         if (quantity < 1) {
             toast.error('Quantity must be at least 1');
             return false;
         }
-
         try {
             setLoading(true);
-            const response = await api.put(`/api/cart/update/${cartItemId}`, {
-                quantity,
-            });
-
+            const response = await api.put(`/api/cart/update/${cartItemId}`, { quantity });
             if (response.data.success && response.data.data) {
                 setCart(response.data.data);
                 toast.success(response.data.message || 'Quantity updated');
@@ -165,9 +121,7 @@ export const CartProvider = ({ children }) => {
                 return false;
             }
         } catch (error) {
-            console.error('Error updating quantity:', error);
             toast.error(error.response?.data?.message || 'Failed to update quantity');
-            // Refetch to get correct state
             await fetchCart();
             return false;
         } finally {
@@ -175,27 +129,21 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    // Remove item from cart
+    // Remove item
     const removeItem = async (productId) => {
         try {
             setLoading(true);
             const response = await api.delete(`/api/cart/remove/${productId}`);
-
             if (response.data.success && response.data.data) {
                 setCart(response.data.data);
-                toast.success(response.data.message || 'Item removed from cart');
-                return true;
-            } else if (response.data.success && !response.data.data) {
-                // Cart is now empty
-                setCart([]);
-                toast.success(response.data.message || 'Item removed from cart');
+                toast.success(response.data.message || 'Item removed');
                 return true;
             } else {
-                toast.error(response.data.message || 'Failed to remove item');
-                return false;
+                setCart([]);
+                toast.success(response.data.message || 'Item removed');
+                return true;
             }
         } catch (error) {
-            console.error('Error removing item:', error);
             toast.error(error.response?.data?.message || 'Failed to remove item');
             return false;
         } finally {
@@ -203,44 +151,45 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    // Checkout
-    const checkout = async () => {
+    // ✅ NEW: Start checkout process (go to checkout page)
+    const startCheckout = async () => {
+        if (cart.length === 0) {
+            toast.error('Your cart is empty');
+            return;
+        }
+        navigate('/checkout'); // ✅ redirect user to checkout page
+    };
+
+    // ✅ Confirm checkout (actual payment)
+    const confirmCheckout = async () => {
         try {
             setLoading(true);
             const response = await api.post('/api/cart/checkout/confirm');
-
             if (response.data.success) {
-                setCart([]);
+                setCart([]); // clear after payment
                 toast.success(response.data.message || 'Checkout successful!');
+                navigate('/order-success'); // ✅ optional success page
                 return response.data.data;
             } else {
                 toast.error(response.data.message || 'Checkout failed');
                 return null;
             }
         } catch (error) {
-            console.error('Error during checkout:', error);
-            toast.error(error.response?.data?.message || 'Checkout failed. Please try again.');
+            toast.error(error.response?.data?.message || 'Checkout failed.');
             return null;
         } finally {
             setLoading(false);
         }
     };
 
-    // Clear cart locally (for logout, etc.)
-    const clearCart = () => {
-        setCart([]);
-        setCartCount(0);
-    };
+    // Clear cart locally
+    const clearCart = () => setCart([]);
 
-    // Calculate cart total
-    const getCartTotal = () => {
-        return cart.reduce((total, item) => total + (item.totalPrice || 0), 0);
-    };
+    const getCartTotal = () =>
+        cart.reduce((total, item) => total + (item.totalPrice || 0), 0);
 
-    // Get total items count
-    const getTotalItems = () => {
-        return cart.reduce((total, item) => total + item.quantity, 0);
-    };
+    const getTotalItems = () =>
+        cart.reduce((total, item) => total + item.quantity, 0);
 
     const value = {
         cart,
@@ -249,7 +198,8 @@ export const CartProvider = ({ children }) => {
         addToCart,
         updateQuantity,
         removeItem,
-        checkout,
+        startCheckout, // ✅ use this instead of checkout()
+        confirmCheckout, // ✅ actual payment confirmation
         clearCart,
         fetchCart,
         getCartTotal,

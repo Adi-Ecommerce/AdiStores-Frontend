@@ -16,6 +16,7 @@ function Cart() {
         getCartTotal,
         getTotalItems,
         fetchCart,
+        startCheckout,
     } = useCart();
 
     useEffect(() => {
@@ -31,7 +32,7 @@ function Cart() {
     const handleCheckout = async () => {
         const result = await checkout();
         if (result) {
-            navigate('/home');
+            navigate('/checkout');
         }
     };
 
@@ -117,7 +118,7 @@ function Cart() {
 
                             {/* Checkout Button */}
                             <button
-                                onClick={handleCheckout}
+                                onClick={startCheckout}
                                 disabled={loading}
                                 className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                             >

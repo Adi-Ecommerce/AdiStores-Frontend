@@ -18,19 +18,30 @@ function CartItem({ item, onUpdateQuantity, onRemove, loading }) {
         await onRemove(item.productId);
     };
 
+    // Get image URL - handle both direct URL and object structure
+    const getImageUrl = (imageData) => {
+        if (!imageData) return '/placeholder-image.png';
+        if (typeof imageData === 'string') return imageData;
+        if (imageData.url) return imageData.url;
+        return '/placeholder-image.png';
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -100 }}
-            className="flex flex-col sm:flex-row gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+            className="flex flex-col sm:flex-row gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow relative"
         >
             {/* Product Image */}
-            <div className="w-full sm:w-24 h-24 flex-shrink-0">
+            <div className="w-full sm:w-24 h-24 flex-shrink-0 bg-gray-100 rounded-md overflow-hidden">
                 <img
-                    src={item.image || '/placeholder-image.png'}
+                    src={getImageUrl(item.image)}
                     alt={item.product || 'Product'}
-                    className="w-full h-full object-cover rounded-md"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                        e.target.src = '/placeholder-image.png';
+                    }}
                 />
             </div>
 
@@ -56,8 +67,8 @@ function CartItem({ item, onUpdateQuantity, onRemove, loading }) {
                         </button>
 
                         <span className="w-12 text-center font-medium text-gray-800">
-              {item.quantity}
-            </span>
+                            {item.quantity}
+                        </span>
 
                         <button
                             onClick={() => handleQuantityChange(item.quantity + 1)}
@@ -80,8 +91,8 @@ function CartItem({ item, onUpdateQuantity, onRemove, loading }) {
                     </button>
 
                     <span className="w-12 text-center font-medium text-gray-800 text-lg">
-            {item.quantity}
-          </span>
+                        {item.quantity}
+                    </span>
 
                     <button
                         onClick={() => handleQuantityChange(item.quantity + 1)}

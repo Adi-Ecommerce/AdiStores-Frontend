@@ -11,6 +11,8 @@ import Cart from "./pages/Cart/Cart.jsx";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/common/PrivateRoute";
 import { CartProvider } from "./context/CartContext";
+import Checkout from "./pages/CHeckOut";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
     return (
@@ -36,6 +38,8 @@ function App() {
                         <Route path='/products/:id' element={<ProductList />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/cart" element={<Cart />} />
+                        <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/product/:id" element={<ProductDetail />} />
                     </Route>
                 </Routes>
             </Router>

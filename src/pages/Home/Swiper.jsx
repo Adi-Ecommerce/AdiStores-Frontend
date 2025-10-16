@@ -26,7 +26,7 @@ const childVariants = {
 
 function Swipe() {
     return (
-        <div className="h-[300px] md:h-[400px] lg:h-[600px] relative">
+        <div className="h-[300px] md:h-[400px] lg:h-[600px] relative -z-0">
             <Swiper
                 modules={[Autoplay, Pagination, Navigation]}
                 loop={true}

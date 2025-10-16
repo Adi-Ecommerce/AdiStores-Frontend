@@ -52,7 +52,7 @@ function MenuContent({
   ...props
 }) {
   return (
-    <MenuPortal className="z-[9999]">
+      <MenuPortal className="">
       {showBackdrop && <MenuBackdrop />}
       <MenuPositioner
         align={align}

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useMemo } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -16,7 +16,6 @@ export const CartProvider = ({ children }) => {
     const BackendURL = import.meta.env.VITE_BACKEND_URL;
     const [cart, setCart] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [cartCount, setCartCount] = useState(0);
 
     // Get token from localStorage
     const getToken = () => localStorage.getItem('token');
@@ -77,10 +76,11 @@ export const CartProvider = ({ children }) => {
     );
 
     // Update cart count whenever cart changes
-    useEffect(() => {
-        const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-        setCartCount(total);
-    }, [cart]);
+    const cartCount = useMemo(
+        () => cart.reduce((sum, item) => sum + item.quantity, 0),
+        [cart]
+    );
+
 
     // Fetch cart from API
     const fetchCart = async () => {

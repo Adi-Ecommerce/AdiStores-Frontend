@@ -140,7 +140,7 @@ function Product() {
 
             {/* Main Content */}
 
-            <div className="min-h-screen w-full bg-[#f8fafc] relative">
+            <div className="min-h-screen w-full bg-[#f8fafc] relative z-0">
                 {/* Top Fade Grid Background */}
                 <div
                     className="absolute inset-0 z-0"

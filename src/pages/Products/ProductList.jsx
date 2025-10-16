@@ -105,15 +105,15 @@ function ProductList() {
     }
 
     return (
-        <div className="p-4">
+        <div className="p-4 z-0">
             {/* Results count */}
             <div className="mb-4 text-gray-600">
                 Showing {currentProducts.length} of {products.length} products
             </div>
 
             {/* Product Grid */}
-            <div className="relative">
-                <div className="pointer-events-none absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-gray-50 via-white/40 to-transparent z-100"></div>
+            <div className="relative ">
+                <div className="pointer-events-none absolute top-0 left-0 w-full h-16 bg-gradient-to-b from-gray-50 via-white/40 to-transparent z-30"></div>
                 <div
                     ref={gridRef}
                     className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2 max-h-screen overflow-y-scroll relative"

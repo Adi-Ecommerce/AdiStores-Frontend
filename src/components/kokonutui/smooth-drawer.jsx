@@ -13,6 +13,7 @@ import {
 } from "../../components/ui/drawer";
 import axios from "axios";
 import { useCart } from "../../context/CartContext";
+import {useNavigate} from "react-router-dom";
 
 function PriceTag({ price, discountedPrice }) {
     return (
@@ -53,6 +54,7 @@ export default function SmoothDrawer({ onPreview, productId }) {
     const [isOpen, setIsOpen] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const { addToCart, loading: cartLoading } = useCart();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!isOpen || !productId) return;
@@ -88,7 +90,9 @@ export default function SmoothDrawer({ onPreview, productId }) {
         const success = await addToCart(productId, quantity);
         if (success) setIsOpen(false);
     };
-
+    const PDP = () =>{
+        navigate(`/product/${productId}`);
+    }
     return (
         <Drawer open={isOpen} onOpenChange={handleOpenChange}>
             <DrawerTrigger asChild>
@@ -188,6 +192,7 @@ export default function SmoothDrawer({ onPreview, productId }) {
 
                                 <DrawerClose asChild>
                                     <Button
+                                        onClick={PDP}
                                         variant="outline"
                                         className="w-full h-11 rounded-xl border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800/80 text-sm font-semibold transition-colors tracking-tighter"
                                     >
